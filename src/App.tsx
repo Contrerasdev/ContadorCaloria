@@ -1,5 +1,10 @@
+//Importar el userRducer
+import { useReducer } from "react";
+import { activityReducer, initialState } from "./reducers/activity-reducer";
+
 import Form from "./Components/Form";
 function App() {
+  const [state, dispatch] = useReducer(activityReducer, initialState);
   return (
     <>
       <header className="bg-blue-900 py-3">
@@ -13,7 +18,9 @@ function App() {
         <div className=" max-w-4xl mx-auto">
           <p className="text-center text-2xl font-bold uppercase py-1">Formulario</p>
         </div>
-        <Form />
+        <Form 
+        dispatch={dispatch}
+        />
       </section>
     </>
   );

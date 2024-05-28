@@ -1,9 +1,15 @@
 //Importando los datos
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import categories from "../data/categories";
 import { Activity } from "../Types";
+import { ActivityActions } from "../reducers/activity-reducer";
 
-const Form = () => {
+//== Creando un type para la funcion dispatch ===
+type FormProps =  {
+  dispatch:Dispatch<ActivityActions>
+}
+
+const Form = ({dispatch}:FormProps) => {
   const [activity, setActivity] = useState<Activity>({
     category: 1,
     actividad: "",
@@ -13,17 +19,41 @@ const Form = () => {
   //=== Capturar evento de los inputs ===
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
     // === Validar si es numero ===
-    const isNumber = ['category', 'calorias'].includes(e.target.name);
-    console.log(isNumber);
-    const { name, value } = e.target;
+    const isNumber = ['category', 'calorias'].includes(e.target.name);    
+    //const { name, value } = e.target;
     setActivity({
-      ...activity, [name]: value
+      ...activity,
+      [e.target.name]: isNumber ? +e.target.value : e.target.value
     });
   };
+
+  // === Mostrar texto del button ===
+  const textButton = () =>{
+    const {category} = activity;
+    if(category === 1){
+      return category;
+    } 
+
+  }
+
+  // === validar y activar el button ===
+  const validado = () => {    
+    const {actividad, calorias} = activity;    
+    return actividad.trim() !== '' && calorias > 0;
+    
+  }
+
   //=== HandleSubmit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Evento submit');
+    dispatch({type:'save-activity', payload:{newActivity:activity}});
+    
+    // Resinicar Form
+    setActivity({
+      category: 1,
+      actividad: "",
+      calorias: 0
+    });
   }
 
   return (
@@ -66,10 +96,10 @@ const Form = () => {
           />
           <input
             type="submit"
-            className="bg-black text-white py-1 rounded-md hover:bg-slate-800 cursor-pointer uppercase"
-            value="Guardar"
-          />
-          <></>
+            className="bg-black text-white py-1 rounded-md hover:bg-slate-800 cursor-pointer uppercase disabled:opacity-20"
+            value={textButton() ? 'Guardar Comida' : 'Guardar Ejercicios'}            
+            disabled={!validado()}
+          />          
         </div>
       </form>
     </>

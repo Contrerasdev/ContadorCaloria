@@ -10,5 +10,4 @@ export type Activity = {
   category: number,
   actividad: string,
   calorias: number
-
 }
