@@ -1,25 +1,29 @@
 //Importando los datos
 import { Dispatch, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import categories from "../data/categories";
 import { Activity } from "../Types";
 import { ActivityActions } from "../reducers/activity-reducer";
 
 //== Creando un type para la funcion dispatch ===
-type FormProps =  {
-  dispatch:Dispatch<ActivityActions>
+type FormProps = {
+  dispatch: Dispatch<ActivityActions>
 }
 
-const Form = ({dispatch}:FormProps) => {
-  const [activity, setActivity] = useState<Activity>({
-    category: 1,
-    actividad: "",
-    calorias: 0
-  });
+const initialState: Activity = {
+  id: uuidv4(),
+  category: 1,
+  actividad: '',
+  calorias: 0
+}
+
+const Form = ({ dispatch }: FormProps) => {
+  const [activity, setActivity] = useState<Activity>(initialState);
 
   //=== Capturar evento de los inputs ===
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
     // === Validar si es numero ===
-    const isNumber = ['category', 'calorias'].includes(e.target.name);    
+    const isNumber = ['category', 'calorias'].includes(e.target.name);
     //const { name, value } = e.target;
     setActivity({
       ...activity,
@@ -28,31 +32,30 @@ const Form = ({dispatch}:FormProps) => {
   };
 
   // === Mostrar texto del button ===
-  const textButton = () =>{
-    const {category} = activity;
-    if(category === 1){
+  const textButton = () => {
+    const { category } = activity;
+    if (category === 1) {
       return category;
-    } 
+    }
 
   }
 
   // === validar y activar el button ===
-  const validado = () => {    
-    const {actividad, calorias} = activity;    
+  const validado = () => {
+    const { actividad, calorias } = activity;
     return actividad.trim() !== '' && calorias > 0;
-    
+
   }
 
   //=== HandleSubmit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch({type:'save-activity', payload:{newActivity:activity}});
-    
-    // Resinicar Form
+    dispatch({ type: 'save-activity', payload: { newActivity: activity } });
+
+    // Reinicar Form
     setActivity({
-      category: 1,
-      actividad: "",
-      calorias: 0
+      ...initialState,
+      id: uuidv4()
     });
   }
 
@@ -97,9 +100,9 @@ const Form = ({dispatch}:FormProps) => {
           <input
             type="submit"
             className="bg-black text-white py-1 rounded-md hover:bg-slate-800 cursor-pointer uppercase disabled:opacity-20"
-            value={textButton() ? 'Guardar Comida' : 'Guardar Ejercicios'}            
+            value={textButton() ? 'Guardar Comida' : 'Guardar Ejercicios'}
             disabled={!validado()}
-          />          
+          />
         </div>
       </form>
     </>

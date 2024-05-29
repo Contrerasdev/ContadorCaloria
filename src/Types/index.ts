@@ -7,7 +7,8 @@ export type Category = {
 // === Creando tipado para las actividades.
 
 export type Activity = {
-  category: number,
-  actividad: string,
+  id:string
+  category: number
+  actividad: string
   calorias: number
 }
