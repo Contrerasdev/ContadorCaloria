@@ -39,29 +39,24 @@ const Form = ({ dispatch }: FormProps) => {
     }
 
   }
-
   // === validar y activar el button ===
   const validado = () => {
     const { actividad, calorias } = activity;
     return actividad.trim() !== '' && calorias > 0;
-
   }
-
   //=== HandleSubmit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch({ type: 'save-activity', payload: { newActivity: activity } });
-
     // Reinicar Form
     setActivity({
       ...initialState,
       id: uuidv4()
     });
   }
-
   return (
     <>
-      <form action="" className="space-y-2 bg-white shadow p-10 rounded-lg" onSubmit={handleSubmit}>
+      <form action="" className="space-y-2 bg-white shadow p-10 rounded-lg w-lg" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 gap-3">
           <label htmlFor="category">Categoía:</label>
           <select
