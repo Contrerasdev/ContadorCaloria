@@ -1,13 +1,15 @@
 //Importando los datos
-import { Dispatch, useState } from "react";
+import {useState, Dispatch, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import categories from "../data/categories";
 import { Activity } from "../Types";
-import { ActivityActions } from "../reducers/activity-reducer";
+import { ActivityActions, ActivityState } from "../reducers/activity-reducer";
+
 
 //== Creando un type para la funcion dispatch ===
 type FormProps = {
-  dispatch: Dispatch<ActivityActions>
+  dispatch: Dispatch<ActivityActions>,
+  state:ActivityState
 }
 
 const initialState: Activity = {
@@ -16,9 +18,18 @@ const initialState: Activity = {
   actividad: '',
   calorias: 0
 }
-
-const Form = ({ dispatch }: FormProps) => {
+const Form = ({ dispatch, state }: FormProps) => {
   const [activity, setActivity] = useState<Activity>(initialState);
+
+  // === Verificar si el form tiene un ID para editar ===
+  useEffect(() =>{    
+      if(state.activeId){        
+        //se usa el sate.activities de activity-reducer y se compara con el state.activedId del state
+        const itemSelect = state.activities.filter(stateActivity => stateActivity.id === state.activeId);
+        //actualizar el estado
+        setActivity(itemSelect[0]);        
+      }    
+  }, [state.activeId]);
 
   //=== Capturar evento de los inputs ===
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement> | React.ChangeEvent<HTMLInputElement>) => {
@@ -30,14 +41,12 @@ const Form = ({ dispatch }: FormProps) => {
       [e.target.name]: isNumber ? +e.target.value : e.target.value
     });
   };
-
   // === Mostrar texto del button ===
   const textButton = () => {
     const { category } = activity;
     if (category === 1) {
       return category;
     }
-
   }
   // === validar y activar el button ===
   const validado = () => {
@@ -46,7 +55,7 @@ const Form = ({ dispatch }: FormProps) => {
   }
   //=== HandleSubmit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault();    
     dispatch({ type: 'save-activity', payload: { newActivity: activity } });
     // Reinicar Form
     setActivity({

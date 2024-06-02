@@ -5,8 +5,7 @@ import Listados from "./Components/Listados";
 
 import Form from "./Components/Form";
 function App() {
-  const [state, dispatch] = useReducer(activityReducer, initialState);
-  
+  const [state, dispatch] = useReducer(activityReducer, initialState);  
   return (
     <>
       <header className="bg-blue-900 py-3">
@@ -22,9 +21,11 @@ function App() {
         </div>
         <Form
           dispatch={dispatch}
+          state={state}
         />
         <Listados
         activities={state.activities}
+        dispatch={dispatch}
          />
       </section>
     </>
