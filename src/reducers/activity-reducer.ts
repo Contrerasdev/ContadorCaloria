@@ -4,7 +4,8 @@ import { Activity } from "../Types";
 export type ActivityActions =
     {type:"save-activity"; payload: { newActivity: Activity }} |
     {type:"set-activeId"; payload: { id: Activity['id'] } } |
-    {type:"delete-activity"; payload:{id: Activity['id']} }
+    {type:"delete-activity"; payload:{id: Activity['id']} } |
+    {type:"reset-app"}
 
 // === State Activity ===
 export type ActivityState = {
@@ -47,6 +48,13 @@ export const activityReducer = (state: ActivityState = initialState, action: Act
            activities:state.activities.filter((actividad) => actividad.id !== action.payload.id )
             
         }
+  }
+  // === Reset app ==
+  if(action.type="reset-app"){
+    return{
+      activities:[],
+      activeId:''
+    }
   }
 
 };
